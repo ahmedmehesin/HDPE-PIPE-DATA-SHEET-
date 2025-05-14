@@ -4,25 +4,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HDPE Pipe Calculator</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>HDPE Pipe Specifications</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    label, select, button {
+      display: block;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #eee;
+    }
+    #propertiesTable {
+      margin-top: 60px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>HDPE Pipe Calculator</h1>
-    <label for="outerDiameter">Outer Diameter (mm):</label>
-    <select id="outerDiameter"></select>
+  <h1>HDPE Pipe Specifications</h1>
+  <label for="diameter">Select Outer Diameter (mm):</label>
+  <select id="diameter"></select>
 
-    <label for="pressure">Pressure (PN):</label>
-    <select id="pressure"></select>
+  <label for="pressure">Select Pressure Rating (PN):</label>
+  <select id="pressure"></select>
 
-    <div id="results">
-      <p><strong>Wall Thickness:</strong> <span id="thickness">—</span> mm</p>
-      <p><strong>Inner Diameter:</strong> <span id="innerDiameter">—</span> mm</p>
-      <p><strong>Weight (kg/m):</strong> <span id="weight">—</span></p>
-    </div>
-  </div>
+  <button onclick="showData()">Show Data</button>
 
-  <script src="script.js"></script>
+  <table id="resultTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Outer Diameter (mm)</th>
+        <th>PN</th>
+        <th>Wall Thickness (mm)</th>
+        <th>Inner Diameter (mm)</th>
+        <th>Weight (kg/m)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>General HDPE Pipe Properties</h2>
+  <table id="propertiesTable">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Material</td><td>High-Density Polyethylene (HDPE)</td></tr>
+      <tr><td>Density</td><td>~0.95 g/cm³</td></tr>
+      <tr><td>Temperature Range</td><td>-40°C to +60°C (continuous)</td></tr>
+      <tr><td>Tensile Strength</td><td>~25 MPa</td></tr>
+      <tr><td>Elongation at Break</td><td>>500%</td></tr>
+      <tr><td>UV Resistance</td><td>High (with carbon black)</td></tr>
+      <tr><td>Chemical Resistance</td><td>Excellent</td></tr>
+      <tr><td>Flexibility</td><td>Good</td></tr>
+      <tr><td>Corrosion Resistance</td><td>Excellent</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const hdpeData = [...]; // سيتم استكمال البيانات هنا لاحقًا
+
+    const diameterSelect = document.getElementById("diameter");
+    const pressureSelect = document.getElementById("pressure");
+    const resultTable = document.getElementById("resultTable");
+    const tbody = resultTable.querySelector("tbody");
+
+    const uniqueDiameters = [...new Set(hdpeData.map(item => item.od))];
+    const uniquePressures = [...new Set(hdpeData.map(item => item.pn))];
+
+    uniqueDiameters.sort((a, b) => a - b).forEach(d => {
+      const option = document.createElement("option");
+      option.value = d;
+      option.textContent = d + " mm";
+      diameterSelect.appendChild(option);
+    });
+
+    uniquePressures.sort((a, b) => a - b).forEach(p => {
+      const option = document.createElement("option");
+      option.value = p;
+      option.textContent = "PN " + p;
+      pressureSelect.appendChild(option);
+    });
+
+    function showData() {
+      const od = parseFloat(diameterSelect.value);
+      const pn = parseFloat(pressureSelect.value);
+      const result = hdpeData.find(item => item.od === od && item.pn === pn);
+
+      tbody.innerHTML = "";
+      if (result) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${result.od}</td><td>${result.pn}</td><td>${result.thickness}</td><td>${result.id.toFixed(1)}</td><td>${result.weight.toFixed(2)}</td>`;
+        tbody.appendChild(row);
+        resultTable.style.display = "table";
+      } else {
+        resultTable.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
