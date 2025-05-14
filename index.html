@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HDPE Pipe Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #005a9e;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            background: #e6f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #91d5ff;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HDPE Pipe Calculator</h1>
+        <label for="outerDiameter">Outer Diameter (mm):</label>
+        <select id="outerDiameter" onchange="populatePressures()"></select>
+
+        <label for="pressure">Pressure (PN):</label>
+        <select id="pressure" onchange="calculate()"></select>
+
+        <div class="result" id="result">
+            Select values to see results.
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 HDPE Calculator
+    </div>
+
+    <script>
+        const pipeData = {
+            "20": {
+                "PN6": { t: 2.0, di: 16.0, w: 0.095 },
+                "PN10": { t: 2.3, di: 15.4, w: 0.107 },
+                "PN16": { t: 3.0, di: 14.0, w: 0.133 }
+            },
+            "25": {
+                "PN6": { t: 2.0, di: 21.0, w: 0.117 },
+                "PN10": { t: 2.3, di: 20.4, w: 0.134 },
+                "PN16": { t: 3.0, di: 19.0, w: 0.167 }
+            },
+            "32": {
+                "PN6": { t: 2.4, di: 27.2, w: 0.188 },
+                "PN10": { t: 3.0, di: 26.0, w: 0.232 },
+                "PN16": { t: 3.6, di: 24.8, w: 0.274 }
+            }
+        };
+
+        const outerDiameterSelect = document.getElementById("outerDiameter");
+        const pressureSelect = document.getElementById("pressure");
+        const resultDiv = document.getElementById("result");
+
+        function populateDiameters() {
+            outerDiameterSelect.innerHTML = "";
+            Object.keys(pipeData).forEach(diameter => {
+                const option = document.createElement("option");
+                option.value = diameter;
+                option.textContent = diameter;
+                outerDiameterSelect.appendChild(option);
+            });
+            populatePressures();
+        }
+
+        function populatePressures() {
+            const selectedDiameter = outerDiameterSelect.value;
+            const pressures = Object.keys(pipeData[selectedDiameter]);
+            pressureSelect.innerHTML = "";
+            pressures.forEach(pn => {
+                const option = document.createElement("option");
+                option.value = pn;
+                option.textContent = pn;
+                pressureSelect.appendChild(option);
+            });
+            calculate();
+        }
+
+        function calculate() {
+            const d = outerDiameterSelect.value;
+            const pn = pressureSelect.value;
+            const data = pipeData[d][pn];
+            resultDiv.innerHTML = `
+                <strong>Outer Diameter:</strong> ${d} mm<br>
+                <strong>Pressure:</strong> ${pn}<br>
+                <strong>Wall Thickness:</strong> ${data.t} mm<br>
+                <strong>Inner Diameter:</strong> ${data.di} mm<br>
+                <strong>Weight per meter:</strong> ${data.w} kg/m
+            `;
+        }
+
+        populateDiameters();
+    </script>
+</body>
+</html>
